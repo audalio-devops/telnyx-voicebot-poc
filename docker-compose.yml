@@ -20,14 +20,14 @@ services:
     container_name: atendente-telnyx-db
     environment:
       POSTGRES_DB: ragdb
-      POSTGRES_USER: ${VA_DB_USERNAME:-dbrag369}
-      POSTGRES_PASSWORD: ${VA_DB_PASSWORD:-pwd-db}
+      POSTGRES_USER: ${VA_DB_USERNAME}
+      POSTGRES_PASSWORD: ${VA_DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${VA_DB_USERNAME:-dbrag369} -d ragdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${VA_DB_USERNAME} -d ragdb"]
       interval: 10s
       timeout: 5s
       retries: 5
