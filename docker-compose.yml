@@ -1,0 +1,44 @@
+services:
+  atendente-telnyx:
+    build: .
+    container_name: atendente-telnyx-app
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT:-8087}:${SERVER_PORT:-8087}"
+    depends_on:
+      atendente-db:
+        condition: service_healthy
+    volumes:
+      - recordings:/data/recordings
+    networks:
+      - backend
+    restart: unless-stopped
+
+  atendente-db:
+    image: postgres:16-alpine
+    container_name: atendente-telnyx-db
+    environment:
+      POSTGRES_DB: ragdb
+      POSTGRES_USER: ${VA_DB_USERNAME:-dbrag369}
+      POSTGRES_PASSWORD: ${VA_DB_PASSWORD:-pwd-db}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${VA_DB_USERNAME:-dbrag369} -d ragdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  recordings:
+  pgdata:
+
+networks:
+  backend:
+

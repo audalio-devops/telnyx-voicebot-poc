@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:atendente_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+telnyx:
+  api-key: KEY_test_secret
+  connection-id: "3099557255473792623"
+  account-sid: "11111111-1111-1111-1111-111111111111"
+  assistant-id: "assistant-6585b0b1-550a-4d7d-948c-eb4e3538e674"
+  default-from: "+551151189636"
+  public-base-url: "https://hooks.example.test"
+  verify-webhook-signature: true
+  webhook-replay-window-sec: 300
+
+atendente:
+  api-auth-token: test-api-token
+  notify-hmac-secret: test-hmac-secret
+  blocklist: "+5511900000000"
+  collection:
+    max-wait-min: 30
+    max-attempts: 5
+    reconcile-interval-ms: 600000
+    notify-interval-ms: 600000
+  storage:
+    type: local
+    local-path: ${java.io.tmpdir}/telnyx-voicebot-poc-test-recordings
+

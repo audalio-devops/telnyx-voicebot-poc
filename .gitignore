@@ -1,0 +1,70 @@
+# ==============================================================================
+# Ambiente e Variáveis Sensíveis (Credenciais / API Keys)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.local
+
+# Scripts e arquivos de configurações locais do ambiente
+configurations.txt
+data/
+
+# ==============================================================================
+# Java & Maven Build Artifacts
+# ==============================================================================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Maven Release & Dependency Reductions
+dependency-reduced-pom.xml
+buildNumber.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+.mvn/timing.properties
+
+# ==============================================================================
+# Logs & Arquivos de Crash / Diagnóstico da JVM
+# ==============================================================================
+*.log
+logs/
+hs_err_pid*
+replay_pid*
+.attach_pid*
+
+# ==============================================================================
+# IDEs & Editores de Código
+# ==============================================================================
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+bin/
+
+# ==============================================================================
+# Sistema Operacional
+# ==============================================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+

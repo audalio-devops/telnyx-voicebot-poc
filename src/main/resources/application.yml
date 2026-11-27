@@ -1,0 +1,97 @@
+server:
+  port: ${SERVER_PORT:8087}
+  shutdown: graceful
+
+spring:
+  application:
+    name: atendente-telnyx
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${VA_DB_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ragdb}}
+    username: ${VA_DB_USERNAME:${SPRING_DATASOURCE_USERNAME:dbrag369}}
+    password: ${VA_DB_PASSWORD:${SPRING_DATASOURCE_PASSWORD:pwd-db}}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  lifecycle:
+    timeout-per-shutdown-graceful-period: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+telnyx:
+  api-key: ${TELNYX_API_KEY:}
+  public-key: ${TELNYX_PUBLIC_KEY:}
+  base-url: ${TELNYX_BASE_URL:https://api.telnyx.com/v2}
+  connection-id: ${TELNYX_CONNECTION_ID:3099557255473792623}
+  account-sid: ${TELNYX_ACCOUNT_SID:}
+  assistant-id: ${TELNYX_ASSISTANT_ID:assistant-6585b0b1-550a-4d7d-948c-eb4e3538e674}
+  default-from: ${TELNYX_DEFAULT_FROM:+551151189636}
+  public-base-url: ${PUBLIC_BASE_URL:http://localhost:8087}
+  verify-webhook-signature: ${TELNYX_WEBHOOK_VERIFY_SIGNATURE:true}
+  webhook-replay-window-sec: ${TELNYX_WEBHOOK_REPLAY_WINDOW_SEC:300}
+  call-timeout-sec: ${CALL_TIMEOUT_SEC:45}
+  call-time-limit-sec: ${CALL_TIME_LIMIT_SEC:600}
+  machine-detection: ${TELNYX_MACHINE_DETECTION:Enable}
+
+atendente:
+  api-auth-token: ${API_AUTH_TOKEN:}
+  notify-hmac-secret: ${NOTIFY_HMAC_SECRET:}
+  collection:
+    max-wait-min: ${COLLECTION_MAX_WAIT_MIN:30}
+    max-attempts: ${COLLECTION_MAX_ATTEMPTS:8}
+    reconcile-interval-ms: ${RECONCILE_INTERVAL_MS:60000}
+    notify-interval-ms: ${NOTIFY_INTERVAL_MS:30000}
+  retention:
+    days: ${RETENTION_DAYS:90}
+    cron: ${RETENTION_CRON:0 0 3 * * *}
+  blocklist: ${NUMBER_BLOCKLIST:}
+  storage:
+    type: ${RECORDING_STORAGE:local}
+    local-path: ${RECORDING_LOCAL_PATH:/data/recordings}
+    s3:
+      bucket: ${S3_BUCKET:atendente-recordings}
+      region: ${S3_REGION:us-east-1}
+      endpoint: ${S3_ENDPOINT:}
+      access-key: ${S3_ACCESS_KEY:}
+      secret-key: ${S3_SECRET_KEY:}
+
+resilience4j:
+  retry:
+    instances:
+      telnyxApi:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+      recordingDownload:
+        maxAttempts: 3
+        waitDuration: 2s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+  circuitbreaker:
+    instances:
+      telnyxApi:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15s
+
